@@ -1,0 +1,61 @@
+{% set name = "fake_services" %}
+
+# use current date: 2021.1.1 as version
+{% set version = datetime.datetime.now().strftime("%Y.%m.%d") %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+build:
+  number: 0
+  noarch: generic
+
+  # only build on linux-64 b/c it is noarch
+  skip: true # [aarch64 or s390x or ppc64le or arm64 or win or osx]
+
+requirements:
+  build:
+    - curl
+
+test:
+  commands:
+    - test -f ${PREFIX}/{{name}}/linux-64/repodata.json                # [unix]
+    - test -f ${PREFIX}/{{name}}/linux-64/current_repodata.json        # [unix]
+    - test -f ${PREFIX}/{{name}}/linux-64/patch_instructions.json      # [unix]
+    - test -f ${PREFIX}/{{name}}/linux-64/repodata_from_packages.json  # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-64/repodata.json                  # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-64/current_repodata.json          # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-64/patch_instructions.json        # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-64/repodata_from_packages.json    # [unix]
+    - test -f ${PREFIX}/{{name}}/win-64/repodata.json                  # [unix]
+    - test -f ${PREFIX}/{{name}}/win-64/current_repodata.json          # [unix]
+    - test -f ${PREFIX}/{{name}}/win-64/patch_instructions.json        # [unix]
+    - test -f ${PREFIX}/{{name}}/win-64/repodata_from_packages.json    # [unix]
+    - test -f ${PREFIX}/{{name}}/noarch/repodata.json                  # [unix]
+    - test -f ${PREFIX}/{{name}}/noarch/current_repodata.json          # [unix]
+    - test -f ${PREFIX}/{{name}}/noarch/patch_instructions.json        # [unix]
+    - test -f ${PREFIX}/{{name}}/noarch/repodata_from_packages.json    # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-arm64/repodata.json                  # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-arm64/current_repodata.json          # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-arm64/patch_instructions.json        # [unix]
+    - test -f ${PREFIX}/{{name}}/osx-arm64/repodata_from_packages.json    # [unix]
+
+about:
+  home: https://github.com/anaconda-services/conda_fake_repodata
+  summary: Creates a fake conda channel that looks like defaults
+  description: "Helps determine missing conda packages required to install a given package"
+  dev_url: https://github.com/anaconda-distribution/conda_fake_services-feedstock
+  doc_url: https://github.com/anaconda-distribution/conda_fake_services-feedstock
+
+extra:
+  skip-lints:
+    # private urls
+    - invalid_url
+    - missing_license_family
+    - missing_license
+    - missing_license_file
+    - missing_tests   # bug?  there are tests
+    - missing_package_version # bug -- we calculate the package version
+  recipe-maintainers:
+    - bkreider

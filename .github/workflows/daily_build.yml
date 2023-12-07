@@ -1,0 +1,28 @@
+name: dailybuild
+on:
+  schedule:
+    # Midnight daily
+    - cron: "15 18 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Trigger build
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        id: checkout
+        with:
+          ref: dailybuild
+      - name: Commit empty to trigger build
+        env:
+          BRANCH: dailybuild
+        run: |
+          date=$(date +"%Y.%m.%d")
+          git config --global user.name bkreider
+          git config --global user.email "bkreider@users.noreply.github.com"
+          git commit -m "Build: $date" --allow-empty
+          git push origin "$BRANCH"
+
