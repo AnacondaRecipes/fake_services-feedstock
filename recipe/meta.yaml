@@ -1,6 +1,5 @@
 {% set name = "fake_services" %}
 
-# use current date: 2021.1.1 as version
 {% set version = datetime.datetime.now().strftime("%Y.%m.%d") %}
 
 package:
